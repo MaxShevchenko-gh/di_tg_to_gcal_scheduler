@@ -1,4 +1,4 @@
-name: Daily Telegram → Google Calendar sync
+name: Daily Telegram to Google Calendar sync
 
 on:
   schedule:
