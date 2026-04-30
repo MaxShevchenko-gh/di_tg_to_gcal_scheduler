@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import sys; print\\(sys.executable\\)\")",
+      "Bash(pip --version)",
+      "Bash(git --version)",
+      "Bash(gh --version)",
+      "Bash(python scripts/run_scan.py)",
+      "Bash(winget install *)",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)"
+    ]
+  }
+}
