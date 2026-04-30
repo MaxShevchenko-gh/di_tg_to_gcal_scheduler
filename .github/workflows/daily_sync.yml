@@ -37,8 +37,8 @@ jobs:
         env:
           TELEGRAM_API_ID:     ${{ secrets.TELEGRAM_API_ID }}
           TELEGRAM_API_HASH:   ${{ secrets.TELEGRAM_API_HASH }}
-          TELEGRAM_CHANNEL:    domigri
           TELEGRAM_USERNAME:   ${{ secrets.TELEGRAM_USERNAME }}
+          TELEGRAM_CHANNEL:    domigri
           GOOGLE_CALENDAR_ID:  primary
           EVENT_TIMEZONE:      Europe/Kyiv
           SCAN_LIMIT:          300
