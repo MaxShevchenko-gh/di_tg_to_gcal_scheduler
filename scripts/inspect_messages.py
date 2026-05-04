@@ -29,7 +29,7 @@ async def main():
         print(f'Last {LIMIT} messages from @{CHANNEL}\n')
 
         async for msg in client.iter_messages(CHANNEL, limit=LIMIT):
-            print(f'{"═" * 60}')
+            print(f'{"=" * 60}')
             print(f'ID: {msg.id}   Date: {msg.date}   Media: {type(msg.media).__name__}')
 
             if msg.message:

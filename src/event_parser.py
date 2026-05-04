@@ -14,11 +14,12 @@ _UA_MONTHS: dict[str, int] = {
     'вересня': 9, 'жовтня': 10, 'листопада': 11, 'грудня': 12,
 }
 
-# First line format: "Game Title  ЧТ 30 квітня 18-00"
-# Title is separated from the date part by 2+ spaces
+# First line format: "Game Title  ЧТ 30 квітня 18-00" (1 or 2 spaces before DOW)
+# Anchor on the day-of-week abbreviation so spacing doesn't matter.
+_DOW = r'(?:ПН|ВТ|СР|ЧТ|ПТ|СБ|НД)'
 _HEADER_RE = re.compile(
-    r'^(.+?)\s{2,}'                              # title (2+ spaces before date)
-    r'(?:[А-ЯІЇЄа-яіїє]{2}\s+)?'               # optional day-of-week (ЧТ, ПТ, …)
+    r'^(.+?)\s+'                                  # title
+    + _DOW + r'\s+'                               # day-of-week (required anchor)
     r'(\d{1,2})\s+'                              # day
     r'(' + '|'.join(_UA_MONTHS) + r')'           # month name
     r'(?:\s+(\d{4}))?\s+'                        # optional year

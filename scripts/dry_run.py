@@ -54,7 +54,7 @@ async def main():
                 continue
 
             found += 1
-            print(f'{"─" * 60}')
+            print(f'{"-" * 60}')
             print(f'Msg ID    : {msg.id}')
             print(f'Title     : {event.title}')
             print(f'Date/Time : {event.start_dt}')
@@ -65,7 +65,7 @@ async def main():
         if found == 0:
             print(f'No attended events found for @{USERNAME} in the last {LIMIT} messages.')
         else:
-            print(f'{"─" * 60}')
+            print(f'{"-" * 60}')
             print(f'Total: {found} event(s) found.')
             print()
             print('If the parsed dates/titles look correct, run:')
