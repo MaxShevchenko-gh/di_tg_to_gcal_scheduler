@@ -2,8 +2,7 @@ import logging
 import os
 from datetime import timedelta
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 from event_parser import EventInfo
@@ -14,17 +13,13 @@ _SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
 class CalendarClient:
-    def __init__(self, data_dir: str, calendar_id: str = 'primary'):
+    def __init__(self, data_dir: str, calendar_id: str):
         self._calendar_id = calendar_id
-        self._token_path = os.path.join(data_dir, 'token.json')
-        self._service = self._build_service()
+        sa_path = os.path.join(data_dir, 'service_account.json')
+        self._service = self._build_service(sa_path)
 
-    def _build_service(self):
-        creds = Credentials.from_authorized_user_file(self._token_path, _SCOPES)
-        if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-            with open(self._token_path, 'w') as f:
-                f.write(creds.to_json())
+    def _build_service(self, sa_path: str):
+        creds = service_account.Credentials.from_service_account_file(sa_path, scopes=_SCOPES)
         return build('calendar', 'v3', credentials=creds)
 
     def event_exists(self, msg_id: int) -> bool:

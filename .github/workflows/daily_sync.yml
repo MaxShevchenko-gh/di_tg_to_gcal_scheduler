@@ -22,16 +22,14 @@ jobs:
             telethon \
             google-api-python-client \
             google-auth-httplib2 \
-            google-auth-oauthlib \
             python-dotenv \
             tzdata
 
       - name: Restore secrets to files
         run: |
           mkdir -p data
-          echo "${{ secrets.TELEGRAM_SESSION_B64 }}" | base64 -d > data/telegram_session.session
-          echo "${{ secrets.GOOGLE_TOKEN_B64 }}"     | base64 -d > data/token.json
-          echo "${{ secrets.GOOGLE_CREDS_B64 }}"     | base64 -d > data/credentials.json
+          echo "${{ secrets.TELEGRAM_SESSION_B64 }}"       | base64 -d > data/telegram_session.session
+          echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_B64 }}" | base64 -d > data/service_account.json
 
       - name: Run sync
         env:
@@ -39,7 +37,7 @@ jobs:
           TELEGRAM_API_HASH:   ${{ secrets.TELEGRAM_API_HASH }}
           TELEGRAM_USERNAME:   ${{ secrets.TELEGRAM_USERNAME }}
           TELEGRAM_CHANNEL:    domigri
-          GOOGLE_CALENDAR_ID:  primary
+          GOOGLE_CALENDAR_ID:  shevchenkomb@gmail.com
           EVENT_TIMEZONE:      Europe/Kyiv
           SCAN_LIMIT:          300
         run: python scripts/run_scan.py
