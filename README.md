@@ -4,7 +4,7 @@ Monitors the [t.me/domigri](https://t.me/domigri) Telegram channel for event pol
 
 ## How it works
 
-The domigri channel posts game-night events as bot-managed polls with two options:
+The domigri channel posts game events as bot-managed polls with two options:
 
 - **Я прийду** (I'll attend)
 - **Місць немає я запасний** (Waitlist)
