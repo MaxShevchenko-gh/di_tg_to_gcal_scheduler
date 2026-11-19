@@ -7,12 +7,21 @@ from zoneinfo import ZoneInfo
 
 logger = logging.getLogger(__name__)
 
-# Ukrainian month names (genitive case, as used in domigri dates)
-_UA_MONTHS: dict[str, int] = {
-    'січня': 1, 'лютого': 2, 'березня': 3, 'квітня': 4,
-    'травня': 5, 'червня': 6, 'липня': 7, 'серпня': 8,
-    'вересня': 9, 'жовтня': 10, 'листопада': 11, 'грудня': 12,
+# Ukrainian month stems. domigri uses full genitive forms ("квітня") but also
+# abbreviations ("листоп."), so match any word starting with a stem.
+_UA_MONTH_STEMS: dict[str, int] = {
+    'січ': 1, 'лют': 2, 'берез': 3, 'квіт': 4,
+    'трав': 5, 'черв': 6, 'лип': 7, 'серп': 8,
+    'верес': 9, 'жовт': 10, 'лист': 11, 'груд': 12,
 }
+
+
+def _month_from_word(word: str) -> Optional[int]:
+    word = word.lower().rstrip('.')
+    for stem, num in _UA_MONTH_STEMS.items():
+        if word.startswith(stem):
+            return num
+    return None
 
 # First line format: "Game Title  ЧТ 30 квітня 18-00" (1 or 2 spaces before DOW)
 # Anchor on the day-of-week abbreviation so spacing doesn't matter.
@@ -21,7 +30,7 @@ _HEADER_RE = re.compile(
     r'^(.+?)\s+'                                  # title
     + _DOW + r'\s+'                               # day-of-week (required anchor)
     r'(\d{1,2})\s+'                              # day
-    r'(' + '|'.join(_UA_MONTHS) + r')'           # month name
+    r'((?:' + '|'.join(_UA_MONTH_STEMS) + r')[а-яіїєґʼ\']*\.?)'  # month: full or abbreviated
     r'(?:\s+(\d{4}))?\s+'                        # optional year
     r'(\d{1,2})[-:Hh](\d{2})',                   # time  HH-MM / HH:MM
     re.IGNORECASE,
@@ -46,7 +55,7 @@ def parse_event_message(text: str, tz_name: str = 'Europe/Kyiv') -> EventInfo:
 
     title  = m.group(1).strip()
     day    = int(m.group(2))
-    month  = _UA_MONTHS[m.group(3).lower()]
+    month  = _month_from_word(m.group(3))
     year   = int(m.group(4)) if m.group(4) else _infer_year(month)
     hour   = int(m.group(5))
     minute = int(m.group(6))

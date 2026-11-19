@@ -42,7 +42,7 @@ async def main():
     async with TelegramClient(session_path, api_id, api_hash) as client:
         print(f'Scanning @{CHANNEL} for events @{USERNAME} is attending…\n')
 
-        created = skipped_past = skipped_exists = 0
+        created = skipped_past = skipped_exists = unparsed = 0
 
         async for msg in client.iter_messages(CHANNEL, limit=LIMIT):
             if not msg.message:
@@ -52,7 +52,12 @@ async def main():
 
             event = parse_event_message(msg.message, TIMEZONE)
 
-            if event.start_dt and event.start_dt < datetime.now(timezone.utc):
+            if event.start_dt is None:
+                print(f'UNPARSED     "{event.title}"  (https://t.me/{CHANNEL}/{msg.id})')
+                unparsed += 1
+                continue
+
+            if event.start_dt < datetime.now(timezone.utc):
                 print(f'SKIP past    "{event.title}"  ({event.start_dt})')
                 skipped_past += 1
                 continue
@@ -70,7 +75,9 @@ async def main():
             except Exception as exc:
                 print(f'ERROR        "{event.title}": {exc}')
 
-        print(f'\nDone.  Created: {created}  |  Skipped past: {skipped_past}  |  Already exists: {skipped_exists}')
+        print(f'\nDone.  Created: {created}  |  Skipped past: {skipped_past}  |  Already exists: {skipped_exists}  |  Unparsed: {unparsed}')
+        if unparsed:
+            sys.exit(1)  # fail the workflow so parse breakages are noticed
 
 
 asyncio.run(main())
